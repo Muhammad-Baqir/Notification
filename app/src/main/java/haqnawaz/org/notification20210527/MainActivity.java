@@ -1,5 +1,6 @@
 package haqnawaz.org.notification20210527;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -26,17 +27,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void ShowNotification(View view) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "1")
+        // Sets an ID for the notification, so it can be updated.
+        int notifyID = 1;
+        String CHANNEL_ID = "my_channel_01";// The id of the channel.
+        CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+        // Create a notification and set the notification channel.
+        Notification notification = new Notification.Builder(MainActivity.this)
+                .setContentTitle("New Message")
+                .setContentText("You've received new messages.")
                 .setSmallIcon(R.drawable.ic_android_black_24dp)
-                .setContentTitle("textTitle")
-                .setContentText("textContent")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setChannelId(CHANNEL_ID)
+                .build();
 
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(mChannel);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(1, notification);
     }
 }
 
